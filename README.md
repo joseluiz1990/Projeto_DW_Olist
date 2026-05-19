@@ -14,7 +14,7 @@ O projeto está organizado na seguinte estrutura de diretórios e arquivos:
 ```text
 dw-olist/
 ├── data/
-│   └── Olist/                  # Arquivos .csv originais extraídos do Kaggle
+│   └── olist/                  # Arquivos .csv originais extraídos do Kaggle
 ├── Graficos/                   # Diretório de destino para os gráficos gerados (PNG/HTML)
 ├── scripts/
 │   ├── 00_setup_duckdb.sql     # Criação do ambiente de Staging (Tabelas stg_)
@@ -26,59 +26,105 @@ dw-olist/
 ├── duckdb.exe                  # Executável do CLI do DuckDB (Windows)
 ├── gerar_graficos.py           # Script Python para geração dos 4 gráficos obrigatórios
 └── README.md                   # Documentação do projeto
+```
 
-🛠️ Pré-requisitos 
+## 🛠️ Pré-requisitos 
 Antes de iniciar a execução, certifique-se de ter os seguintes componentes configurados na sua máquina:
 
-1. Verificar a Versão do Python
+### 1. Baixar dataset brazilianecommmerce
+Acesse o site e baixe o dataset para a pasta /data/olist
+
+Kaggle: https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce
+
+### 2. Baixar dataset brazilian-ecommerce olist
+Acesse o site e baixe o dataset para a pasta /data/olist
+
+### 3. Verificar a Versão do Python
 Abra o PowerShell e execute:
-# Verificar se o Python está instalado
+Verificar se o Python está instalado
+
+PowerShell
 python –version
-# Se abrir a Microsoft Store ao digitar python:
-# Vá em: Configurações → Aplicativos → Aliases de execução do aplicativo
-# Desative os aliases "python.exe" e "python3.exe"
-# Atenção: Microsoft Store
+
+Se abrir a Microsoft Store ao digitar python:
+Vá em: Configurações → Aplicativos → Aliases de execução do aplicativo
+Desative os aliases "python.exe" e "python3.exe"
+
+**Atenção: Microsoft Store**
 Se o Windows abrir a Store ao digitar "python", desative o alias em Configurações → Aplicativos → Aliases de execução.
 Depois instale o Python pelo site oficial: python.org/downloads
 
-2 Instalar o DuckDB CLI no Windows
-# Colocar o executável duckdb.exe na pasta raiz do projeto.
-# Testar o duckdb.exe local
+### 4. Instalar o DuckDB CLI no Windows
+- Colocar o executável duckdb.exe na pasta raiz do projeto.
+- Testar o duckdb.exe local
+
+PowerShell
 .\duckdb.exe demo.duckdb -c "SELECT 'ok' AS status;"
-# Se preferir instalar globalmente (via winget):
+
+- Se preferir instalar globalmente (via winget):
+
+PowerShell
 winget install DuckDB.cli 
-# Verificar versão
+
+- Verificar versão
+
+PowerShell
 duckdb –version
-# Nota: duckdb.exe local vs. global
+
+**Nota: duckdb.exe local vs. global**
 Se o duckdb não estiver no PATH, use sempre .\duckdb.exe (com ponto e barra) para chamar o executável local da pasta do projeto.
 O script run_all.ps1 detecta automaticamente qual usar.
 
-3 Configurar a Política de Execução do PowerShell
-# Liberar scripts para o seu usuário (execute uma única vez)
+### 5. Configurar a Política de Execução do PowerShell
+- Liberar scripts para o seu usuário (execute uma única vez)
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
-# Se o Windows reclamar de assinatura, desbloqueie os arquivos:
+- Se o Windows reclamar de assinatura, desbloqueie os arquivos:
+
+PowerShell
 Unblock-File .\run_all.ps1
+
+PowerShell
 Unblock-File .\scripts\*.sql
-# Alternativa temporária (sem alterar a política permanente):
+
+- Alternativa temporária (sem alterar a política permanente):
+
 powershell -ExecutionPolicy Bypass -File .\run_all.ps1
 
-4 Criar o Ambiente Virtual Python
-# Entrar na pasta do projeto
+### 6. Criar o Ambiente Virtual Python
+- Entrar na pasta do projeto
+
+PowerShell
 cd C:\data\dw-atividade-olist-sample
-# Criar ambiente virtual
+
+- Criar ambiente virtual
+
+PowerShell
 python -m venv .venv
-# Ativar o ambiente (PowerShell)
+
+- Ativar o ambiente (PowerShell)
+
+PowerShell
 .\.venv\Scripts\Activate.ps1
-# Atualizar o pip e instalar as dependências
+
+- Atualizar o pip e instalar as dependências
+
+PowerShell
 python -m pip install --upgrade pip
+
+PowerShell
 pip install --only-binary=:all: duckdb pandas plotly kaleido
-# Verificar instalação
+
+- Verificar instalação
+
+PowerShell
 python -c "import duckdb, pandas, plotly; print('OK')"
-# Nota:
+
+**Nota:**
 --only-binary=:all:
+
 Este parâmetro instrui o pip a baixar apenas versões pré-compiladas (wheels), evitando tentativas de compilar o DuckDB localmente, o que poderia falhar por falta de compiladores C no Windows.
 
-🚀 Passo a Passo para Execução do Pipeline
+## 🚀 Passo a Passo para Execução do Pipeline
 Abra o seu terminal (preferencialmente o PowerShell no Windows) na raiz do projeto (C:\Users\...\data\dw-atividade-olist-sample) e execute os passos na ordem cronológica abaixo:
 
 ### Passo 1: Ingestão e Carga da Camada de Staging
@@ -117,7 +163,7 @@ Executa todos os 5 scripts do pipeline completo de uma só vez
 PowerShell
 .\run_all.ps1
 
-📊 Geração dos Gráficos Analíticos
+## 📊 Geração dos Gráficos Analíticos
 Com o banco de dados demo.duckdb totalmente carregado e otimizado através dos passos anteriores, execute o script Python para extrair as métricas e gerar os relatórios visuais obrigatórios:
 
 PowerShell
